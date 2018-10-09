@@ -1,36 +1,31 @@
-# Get audio features for given URLs in chunks of 50
-
 from spotipy.oauth2 import SpotifyClientCredentials
-import json
 import spotipy
-import sys
+import time
 import pandas as pd
 
-print("Loading data")
-data = pd.read_csv("spotifys-worldwide-daily-song-ranking/data.csv")
-print("Done.")
+# Get audio features for our dataset consisting of 200 most streamed track per country from the
+# Spotify API
 
-data = data.head(200)
+print("Loading data")
+df = pd.read_csv("data/aggregated_data.csv")
+print("Done.")
 
 client_credentials_manager = SpotifyClientCredentials()
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 sp.trace=True
 
-tids = []
-for tid in data['URL']:
-    tids.append(tid)
-
 chunk_size = 50
-tid_chunks = [tids[i:i+chunk_size] for i  in range(0, len(tids), chunk_size)]
+tids = df['URL']
+tid_chunks = [tids[i:i+chunk_size] for i in range(0, len(tids), chunk_size)]
 
-features = []
+number_of_tracks = len(tids.values)
+counter = 0
+features = pd.DataFrame()
 for chunk in tid_chunks:
+    start = time.time()
     for row in sp.audio_features(chunk):
-        features.append(row)
+        features = features.append(pd.Series(row), ignore_index=True)
+        counter = counter + 1
+    print("Features for %s / %s tracks fetched" % (counter, number_of_tracks))
 
-# Make data frame
-features_df = pd.DataFrame(features)
-
-# TODO: combine with original data df
-
-print(features_df)
+features.to_csv('data/tracks_with_features.csv')
