@@ -6,9 +6,7 @@ import pandas as pd
 # Get audio features for our dataset consisting of 200 most streamed track per country from the
 # Spotify API
 
-print("Loading data")
 df = pd.read_csv("data/aggregated_data.csv")
-print("Done.")
 
 client_credentials_manager = SpotifyClientCredentials()
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
