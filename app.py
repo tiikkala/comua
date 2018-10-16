@@ -28,15 +28,16 @@ data = [dict(
                 [0.6, "rgb(90, 120, 245)"], [0.7, "rgb(106, 137, 247)"], [1, "rgb(220, 220, 220)"]],
     autocolorscale=False,
     reversescale=True,
+    showscale=False,
     marker=dict(
         line=dict(
             color='rgb(180,180,180)',
             width=0.5
         )
     ),
-    colorbar=dict(
-        autotick=False,
-        title='GDP<br>Billions US$'),
+    #colorbar=dict(
+    #    autotick=False,
+    #    title='GDP<br>Billions US$'),
 )]
 
 layout = dict(
@@ -55,55 +56,71 @@ layout = dict(
 app.layout = html.Div(
     className='container-fluid',
     children=[
-
-    html.H1(
-        children='Country Music Analyzer',
-        style=dict(
-            color=colors['text']
+        html.Div(
+            className='row',
+            children=[
+                html.H1(
+                    children='Country Music Analyzer',
+                    style=dict(
+                        color=colors['text'],
+                        textAlign='center'
+                    ),
+                    className='col'
+                )
+            ]
         ),
-        className='row justify-content-center'
-    ),
+        html.Div(
+            className='row',
+            children=[
+                html.P(children='Tool for analyzin country specific preferences of musical '
+                                'features in popular songs in Spotify',
+                       style=dict(
+                           color=colors['text'],
+                           textAlign='center'
+                       ),
+                       className='col'
+                       )
+            ]
+        ),
+        html.Div(
+            className='row justify-content-center',
+            children=[
+                html.Div(className='col',
+                         children=[
+                             dcc.Graph(
+                                 id='world-choropleth',
+                                 figure=dict(
+                                     data=data,
+                                     layout=layout
+                                 )
+                             )
+                         ])
+            ]
+        ),
+        html.Div(
+            className='row justify-content-center',
+            children=[
+                html.Div(
+                    className='col-sm-6',
+                    children=[
+                        dcc.Slider(
+                            id='my-slider',
+                            min=0,
+                            max=20,
+                            step=0.5,
+                            value=10,
+                            vertical=False
+                        )
+                    ]
+                )
+            ]
+        )
+    ])
 
-    html.Div(children='Tool for analyzin country specific preferences of musical '
-                      'features in popular songs in Spotify',
-             style=dict(
-                 color=colors['text']
-             ),
-             className='row justify-content-center'
-    ),
-
-    html.Div(
-    className='row',
-    children=[
-        dcc.Graph(
-            id='world-choropleth',
-            figure=dict(
-                data=data,
-                layout=layout
-            )
-        )]
-    ),
-
-    html.Div(
-        className='col-sm-12',
-        children=[
-            dcc.Slider(
-                id='my-slider',
-                min=0,
-                max=20,
-                step=0.5,
-                value=10,
-                vertical=False
-            )
-        ]
-    ),
-
-])
-
-#@app.callback(
+# @app.callback(
 #    dash.dependencies.Output('slider-output-container', 'children'),
 #    [dash.dependencies.Input('my-slider', 'value')])
-#def update_output(value):
+# def update_output(value):
 #    return 'You have selected "{}"'.format(value)
 
 if __name__ == '__main__':
