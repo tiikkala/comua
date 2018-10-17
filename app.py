@@ -35,7 +35,7 @@ data = [dict(
             width=0.5
         )
     ),
-    #colorbar=dict(
+    # colorbar=dict(
     #    autotick=False,
     #    title='GDP<br>Billions US$'),
 )]
@@ -76,7 +76,7 @@ app.layout = html.Div(
                                 'features in popular songs in Spotify',
                        style=dict(
                            color=colors['text'],
-                           textAlign='center'
+                           textAlign='center',
                        ),
                        className='col'
                        )
@@ -103,25 +103,34 @@ app.layout = html.Div(
                 html.Div(
                     className='col-sm-6',
                     children=[
+                        html.Label('Tempo',
+                                   style=dict(
+                                       color=colors['text'],
+                                       textAlign='center',
+                                       display='block'
+                                   )),
                         dcc.Slider(
                             id='my-slider',
                             min=0,
-                            max=20,
-                            step=0.5,
+                            max=200,
+                            step=1,
                             value=10,
-                            vertical=False
-                        )
+                            updatemode='mouseup'
+                        ),
+                        html.Div(id='slider-output-container')
                     ]
                 )
             ]
         )
     ])
 
-# @app.callback(
-#    dash.dependencies.Output('slider-output-container', 'children'),
-#    [dash.dependencies.Input('my-slider', 'value')])
-# def update_output(value):
-#    return 'You have selected "{}"'.format(value)
+
+@app.callback(
+    dash.dependencies.Output('slider-output-container', 'children'),
+    [dash.dependencies.Input('my-slider', 'value')])
+def update_output(value):
+    return 'You have selected "{}"'.format(value)
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
