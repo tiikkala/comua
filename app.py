@@ -72,7 +72,7 @@ app.layout = html.Div(
         html.Div(
             className='row',
             children=[
-                html.P(children='Tool predicting country specific popularity of a song based on its'
+                html.P(children='Tool predicting country specific popularity of a song based on its '
                                 'musical features',
                        style=dict(
                            color=colors['text'],
