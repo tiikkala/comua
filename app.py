@@ -19,6 +19,10 @@ colors = {
 
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_world_gdp_with_codes.csv')
 
+# Country codes conversion from ISO 3166-1 alpha-2 to ISO 3166-1 alpha-3
+#dfcountry = pd.read_csv('countryMap.txt',sep='\t')
+#df = df.merge(dfcountry,how='inner',left_on=['Country'],right_on=['2let'])
+
 data = [dict(
     type='choropleth',
     locations=df['CODE'],
