@@ -7,4 +7,4 @@ Dependencies are managed with a `virtualenv`. Trigger the virtualenv by running 
 
 # Managing dependencies
 
-Dependencies are managed in `requirements.txt` file. When addind new Python libraries to the project, run `pip freeze` in the `virtualenv` in order to update the `the requiremnts.txt` to match the libraries used in Python source files.
+Dependencies are managed in `requirements.txt` file. When addind new Python libraries to the project, run `pip freeze > requirements.txt` in the `virtualenv` in order to update the requiremnts.txt` to match the libraries used in Python source files.
