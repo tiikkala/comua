@@ -16,6 +16,7 @@ class Region:
     def __init__(self,region_name):
         self.name = region_name
         self.features = {}
+        self.normalizer = 1.0
     
     def __str__(self):
         return json.dumps(self.__dict__)
@@ -23,18 +24,22 @@ class Region:
     def add_feature(self,feature_name,means,variances,weights):
         self.features[feature_name] = {'means' : means.tolist(), 'variances' : variances.tolist(),'weights' : weights.tolist()}
     
+    def set_normalizer(self,normalizer):
+        self.normalizer = [normalizer]
+    
+    
     def build_from_dict(self,dictionary):
+        self.normalizer = dictionary['normalizer']
         features = dictionary['features']
         for feature in features:
             self.features[feature] = {'means' : features[feature]['means'],'variances' : features[feature]['variances'],'weights' : features[feature]['weights'],'coefficient' : features[feature]['coefficient']}
         return self
     
     def value(self,point):
-        point = point.reshape(-1,1)
         value = 0
         i=0
         for feature in self.features:
-            value += self.features[feature]['coefficient']*self.feature_pdf(point[i],feature)
+            value += self.features[feature]['coefficient']*self.feature_pdf(point[:,i],feature)
             i+=1
         return value
     
@@ -67,6 +72,7 @@ class Predictor:
         self.model_filename = model_filename
         self.init_scaler()
         self.init_model()
+        
     
     def init_scaler(self):
         self.scaler = joblib.load(self.scaler_filename)
@@ -78,8 +84,8 @@ class Predictor:
         for region in model:
             region_object = Region(region).build_from_dict(model[region])
             self.region_objects[region] = region_object
-        
-    def value(self,point,original_dataframe):
+    
+    def value(self,point):
         if type(point) == 'list':
             point = np.array(point)
         point = point.reshape([1,-1])
@@ -90,19 +96,16 @@ class Predictor:
         relative_values = np.zeros(len(self.region_objects))
         for i, region in enumerate(self.region_objects):
             absolute_values[i] = self.region_objects[region].value(x)
-            if region == 'world':
-                data = original_dataframe['streams']
-            else:
-                data  = original_dataframe['streams'].loc[original_dataframe['region']==region]
-            relative_values[i] = absolute_values[i] / np.mean(data.values)
+            relative_values[i] = 100*absolute_values[i] / self.region_objects[region].normalizer
         df['absolute_values']=absolute_values
         df['relative_values']=relative_values
         return df
-
+        
+  
 
 
 # =============================================================================
-# THESE ARE NAMES AND PREDICTOR DOE NOT NEED THEM IF THEY ARE USED   
+# THESE ARE DEFAULT NAMES AND PREDICTOR DOE NOT NEED THEM IF THEY ARE USED   
 # =============================================================================
 #scaler_filename = 'scaler.save'
 #model_filename = 'model.json'
@@ -124,7 +127,7 @@ point = X[0,:]
 
 
 predictor = Predictor()
-desired_dataframe = predictor.value(point,df)
+desired_dataframe = predictor.value(point)
 
 print(desired_dataframe)
 
