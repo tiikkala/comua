@@ -32,7 +32,7 @@ print(point)
 
 predictor = music_analyzer_classes.Predictor()
 #point = ('tempo','energy','liveness','duration_ms','loudness','instrumentalness','acousticness','speechiness')
-dfpred = predictor.value(point,dfdata)
+dfpred = predictor.value(point)
 
 # Country codes conversion from ISO 3166-1 alpha-2 to ISO 3166-1 alpha-3
 dfcountry = pd.read_csv('data/countryMap.txt',sep='\t')
@@ -48,8 +48,8 @@ data = [dict(
 #                [0.6, "rgb(90, 120, 245)"], [0.7, "rgb(106, 137, 247)"], [1, "rgb(220, 220, 220)"]],
 #    autocolorscale=False,
     autocolorscale=True,
-    reversescale=True,
-    showscale=False,
+    reversescale=False,
+    showscale=True,
     marker=dict(
         line=dict(
             color='rgb(180,180,180)',
@@ -383,7 +383,7 @@ def update_speechiness(value):
 def update_graph(tempo, energy, liveness, duration, loudness, instrumentalness, acousticness, speechiness):
     point = np.array([tempo, energy, liveness, duration, loudness, instrumentalness, acousticness, speechiness])
 #    predictor = music_analyzer_classes.Predictor()
-    dfpred = predictor.value(point,dfdata)
+    dfpred = predictor.value(point)
 
     # Country codes conversion from ISO 3166-1 alpha-2 to ISO 3166-1 alpha-3
     dfcountry = pd.read_csv('data/countryMap.txt',sep='\t')
@@ -402,8 +402,8 @@ def update_graph(tempo, energy, liveness, duration, loudness, instrumentalness, 
     #                [0.6, "rgb(90, 120, 245)"], [0.7, "rgb(106, 137, 247)"], [1, "rgb(220, 220, 220)"]],
     #    autocolorscale=False,
         autocolorscale=True,
-        reversescale=True,
-        showscale=False,
+        reversescale=False,
+        showscale=True,
         marker=dict(
             line=dict(
                 color='rgb(180,180,180)',
